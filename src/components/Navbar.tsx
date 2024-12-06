@@ -2,14 +2,17 @@ import React from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { Button, Box } from "@mui/material";
 import { FaChevronDown } from "react-icons/fa";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const Navbar: React.FC = () => {
+  const navigate = useNavigate(); // Initialize navigate for routing
+
   const buttonTexts = [
     "NEW IN",
     "SHOP BY",
     "WOMEN",
     "MEN",
-    "DESGINERS",
+    "DESIGNERS",
     "CLOTHING",
     "SHOES",
     "BAGS",
@@ -41,8 +44,13 @@ const Navbar: React.FC = () => {
       <div className="mt-4" />
 
       <div className="flex items-center justify-center p-3 bg-black text-white">
-        <Button variant="text" color="inherit" sx={{ textTransform: "none" }}>
-          <FaArrowLeft style={{marginRight:"5px"}}/>
+        <Button
+          variant="text"
+          color="inherit"
+          sx={{ textTransform: "none" }}
+          onClick={() => navigate(-1)} // This will navigate back to the previous page
+        >
+          <FaArrowLeft style={{ marginRight: "5px" }} />
           Men
         </Button>
       </div>

@@ -13,7 +13,12 @@ import {
 } from "@mui/material";
 import { getAllProducts } from "../../services/productService";
 
-const MainContent: React.FC = () => {
+
+interface MainContentProps {
+  onProductClick: (productId: number) => void; // Passed as prop from ProductPage
+}
+
+const MainContent: React.FC<MainContentProps> = ({ onProductClick }) => {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -110,7 +115,9 @@ const MainContent: React.FC = () => {
                   justifyContent: "space-between", // Distribute content
                   padding: 2, // Add padding inside the card
                   margin: "auto", // Center card if needed
+                  cursor: "pointer", // Show cursor on hover
                 }}
+                onClick={() => onProductClick(product.id)} // Navigate to product details
               >
                 <img
                   src={product.image}
