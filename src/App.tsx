@@ -9,7 +9,6 @@ import "./App.css";
 const App: React.FC = () => {
   return (
     <div className="App">
-      {/* Navbar and BreadcrumbAndControls will persist across all pages */}
       <Navbar />
       <BreadcrumbAndControls />
       
