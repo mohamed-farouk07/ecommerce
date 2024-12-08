@@ -1,70 +1,54 @@
-# Getting Started with Create React App
+# E-commerce Product Page
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a front-end application built with React and Material-UI, designed to display products in a grid layout. It allows users to browse products, view product details, and filter products based on categories and price. The application fetches product data from a backend API.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- Display products in a grid with relevant details like title, price, and category.
+- Sidebar with dropdown filters for categories and price.
+- Product detail page with an option to add the product to the cart.
+- Loading indicator while fetching product data.
 
-### `npm start`
+## Technologies
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **React** - A JavaScript library for building user interfaces.
+- **Material-UI** - A React UI framework for styling the components.
+- **TypeScript** - A typed superset of JavaScript for better tooling and error checking.
+- **React Router** - For navigating between different views (Product List, Product Details).
+- **Axios** (or other services) - For making API requests to fetch product data.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Setup
 
-### `npm test`
+### Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Make sure you have the following installed:
 
-### `npm run build`
+- Node.js
+- npm or yarn
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Installation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/ecommerce-product-page.git
+   /src
+   /ui
+    /component        # UI components like Product Card, Filters, etc.
+    /pages            # Pages like ProductPage, MainContent, etc.
+   /services           # API calls and services to interact with backend.
+   /images             # Static image assets.
+   App.tsx             # Main entry point for the application.
+   index.tsx           # ReactDOM render point.
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Key Sections:
+- **Project Overview**: General description of the app's functionality and purpose.
+- **Features**: Key features of the application.
+- **Technologies**: Technologies used in the project.
+- **Setup Instructions**: Step-by-step guide to setting up the project locally.
+- **Directory Structure**: A brief overview of the project structure.
+- **API Integration**: Explanation of how the API is used to fetch product data.
+- **Components**: Explanation of the key components used in the application.
+- **Contributing**: Information on how to contribute to the project.
+- **License**: The project's license.
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
