@@ -18,23 +18,45 @@ import { ReactComponent as VisaIcon } from "../../images/visa.svg";
 import { ReactComponent as MastercardIcon } from "../../images/master-card.svg";
 import { ReactComponent as ApplePayIcon } from "../../images/apple-pay.svg";
 import { ReactComponent as Maestro } from "../../images/maestro.svg";
-import { FaMinus, FaPlus } from "react-icons/fa";
 
-const ViewProduct = () => {
+// Define the Product type for better type safety
+interface Product {
+  id: number;
+  title: string;
+  category: string;
+  description: string;
+  price: number;
+  image: string;
+}
+
+interface ViewProductProps {
+  addToCart: (product: Product) => void;
+}
+
+const ViewProduct: React.FC<ViewProductProps> = ({ addToCart }) => {
   const { productId } = useParams<{ productId: string }>();
-  const [product, setProduct] = useState<any>(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-
-  // State for managing cart quantity and toggle
-  const [quantity, setQuantity] = useState<number>(0);
   const [showQuantityControls, setShowQuantityControls] =
     useState<boolean>(false);
 
+  const paymentIcons = [
+    { Component: VisaIcon, alt: "Visa" },
+    { Component: MastercardIcon, alt: "MasterCard" },
+    { Component: ApplePayIcon, alt: "Apple Pay" },
+    { Component: Maestro, alt: "Maestro" },
+    { Component: GooglePayLogo, alt: "Google Pay" },
+  ];
+
+  // Fetch product details
   useEffect(() => {
     const fetchProduct = async () => {
+      setLoading(true);
       try {
-        const data = await getSingleProduct(Number(productId)); // Fetch single product data
-        setProduct(data);
+        if (productId) {
+          const data = await getSingleProduct(Number(productId));
+          setProduct(data);
+        }
       } catch (error) {
         console.error("Failed to fetch product:", error);
       } finally {
@@ -54,169 +76,169 @@ const ViewProduct = () => {
   }
 
   if (!product) {
-    return <Typography>Product not found.</Typography>;
+    return (
+      <Typography sx={{ textAlign: "center", mt: 4 }}>
+        Product not found.
+      </Typography>
+    );
   }
-
-  const icons = [
-    { Component: VisaIcon, alt: "Visa" },
-    { Component: MastercardIcon, alt: "MasterCard" },
-    { Component: ApplePayIcon, alt: "Apple Pay" },
-    { Component: Maestro, alt: "Maestro" },
-    { Component: GooglePayLogo, alt: "Google Pay" },
-  ];
-
-  // Handle increment/decrement
-  const handleIncrement = () => setQuantity((prev) => prev + 1);
-  const handleDecrement = () => setQuantity((prev) => Math.max(prev - 1, 0));
 
   return (
     <Box sx={{ display: "flex", flexWrap: "nowrap", gap: 4, padding: 4 }}>
-      {/* Left Side: Vertical Image Carousel */}
-      <Stack direction="column" spacing={2} sx={{ width: "10%" }}>
-        {["image1.jpg", "image2.jpg", "image3.jpg", "image4.jpg"].map(
-          (src, index) => (
-            <Card key={index} sx={{ border: "1px solid #ddd", padding: 1 }}>
-              <CardMedia
-                component="img"
-                image={product.image}
-                alt={`Thumbnail ${index + 1}`}
-              />
-            </Card>
-          )
-        )}
-      </Stack>
+      {/* Left Side: Thumbnails */}
+      <Thumbnails images={Array(4).fill(product.image)} />
 
       {/* Center: Main Product Image */}
-      <Box
-        sx={{
-          flexGrow: 1,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "start",
-        }}
-      >
-        <img
-          src={product.image}
-          alt={product.title}
-          style={{ width: "70%", height: "60%", objectFit: "contain" }}
-        />
-      </Box>
+      <MainProductImage image={product.image} title={product.title} />
 
       {/* Right Side: Product Details */}
-      <Box
-        sx={{ width: "30%", display: "flex", flexDirection: "column", gap: 2 }}
-      >
-        {/* Brand Logo */}
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Typography
-            variant="h6"
-            sx={{ textAlign: "center", marginTop: 2, fontWeight: "bold" }}
-          >
-            {product.category}
-          </Typography>
-        </Box>
-
-        {/* Product Name */}
-        <Typography variant="h6" sx={{ color: "gray", textAlign: "center" }}>
-          {product.title}
-        </Typography>
-        <Typography
-          variant="h4"
-          sx={{ fontWeight: "bold", textAlign: "center" }}
-        >
-          ${product.price}
-        </Typography>
-        <Typography variant="body2" sx={{ textAlign: "center", marginTop: 2 }}>
-          {product.description}
-        </Typography>
-
-        {/* Size Guide and Dropdown */}
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-          <Typography
-            variant="body2"
-            sx={{ fontWeight: "bold", cursor: "pointer" }}
-          >
-            Size Guide
-          </Typography>
-          <Select defaultValue="" displayEmpty>
-            <MenuItem value="" disabled>
-              Choose an option
-            </MenuItem>
-            <MenuItem value="Size 1">Size 1</MenuItem>
-            <MenuItem value="Size 2">Size 2</MenuItem>
-            <MenuItem value="Size 3">Size 3</MenuItem>
-          </Select>
-        </Box>
-
-        {/* Buttons */}
-        {showQuantityControls ? (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 2,
-            }}
-          >
-            <IconButton onClick={handleDecrement} color="primary">
-              <FaMinus style={{color:"#000"}} />
-            </IconButton>
-            <Typography variant="h6">{quantity}</Typography>
-            <IconButton onClick={handleIncrement} color="primary">
-              <FaPlus style={{color:"#000"}} />
-            </IconButton>
-          </Box>
-        ) : (
-          <Button
-            variant="contained"
-            sx={{
-              width: "100%",
-              height: 50,
-              color: "#fff",
-              backgroundColor: "#000",
-            }}
-            onClick={() => {
-              setShowQuantityControls(true);
-              setQuantity(1); // Start with a quantity of 1
-            }}
-          >
-            Add To Cart
-          </Button>
-        )}
-        <Button
-          variant="contained"
-          sx={{
-            width: "100%",
-            height: 50,
-            display: "flex", // Ensures proper alignment of content
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 1, // Adds spacing between the image and text
-            backgroundColor: "grey",
-          }}
-        >
-          Pay with
-          <GooglePayLogo style={{ width: 70, height: 70 }} />
-        </Button>
-
-        {/* Payment Icons */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center", // Center items horizontally
-            alignItems: "center", // Center items vertically (optional)
-            marginTop: 2,
-          }}
-        >
-          {icons.map(({ Component, alt }, index) => (
-            <IconButton key={index} aria-label={alt}>
-              <Component style={{ width: 40, height: 40 }} />
-            </IconButton>
-          ))}
-        </Box>
-      </Box>
+      <ProductDetails
+        product={product}
+        showQuantityControls={showQuantityControls}
+        setShowQuantityControls={setShowQuantityControls}
+        addToCart={addToCart}
+        paymentIcons={paymentIcons}
+      />
     </Box>
   );
 };
+
+// Thumbnail component for better reusability
+const Thumbnails: React.FC<{ images: string[] }> = ({ images }) => (
+  <Stack direction="column" spacing={2} sx={{ width: "10%" }}>
+    {images.map((src, index) => (
+      <Card key={index} sx={{ border: "1px solid #ddd", padding: 1 }}>
+        <CardMedia component="img" image={src} alt={`Thumbnail ${index + 1}`} />
+      </Card>
+    ))}
+  </Stack>
+);
+
+// Main Product Image component
+const MainProductImage: React.FC<{ image: string; title: string }> = ({
+  image,
+  title,
+}) => (
+  <Box
+    sx={{
+      flexGrow: 1,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "start",
+    }}
+  >
+    <img
+      src={image}
+      alt={title}
+      style={{ width: "70%", height: "60%", objectFit: "contain" }}
+    />
+  </Box>
+);
+
+// Product Details component
+const ProductDetails: React.FC<{
+  product: Product;
+  showQuantityControls: boolean;
+  setShowQuantityControls: React.Dispatch<React.SetStateAction<boolean>>;
+  addToCart: (product: Product) => void;
+  paymentIcons: { Component: React.FC; alt: string }[];
+}> = ({
+  product,
+  showQuantityControls,
+  setShowQuantityControls,
+  addToCart,
+  paymentIcons,
+}) => (
+  <Box sx={{ width: "30%", display: "flex", flexDirection: "column", gap: 2 }}>
+    {/* Product Info */}
+    <Typography variant="h6" sx={{ textAlign: "center", fontWeight: "bold" }}>
+      {product.category}
+    </Typography>
+    <Typography variant="h6" sx={{ color: "gray", textAlign: "center" }}>
+      {product.title}
+    </Typography>
+    <Typography variant="h4" sx={{ fontWeight: "bold", textAlign: "center" }}>
+      ${product.price}
+    </Typography>
+    <Typography variant="body2" sx={{ textAlign: "center" }}>
+      {product.description}
+    </Typography>
+
+    {/* Size Selection */}
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+      <Typography
+        variant="body2"
+        sx={{ fontWeight: "bold", cursor: "pointer" }}
+      >
+        Size Guide
+      </Typography>
+      <Select defaultValue="" displayEmpty>
+        <MenuItem value="" disabled>
+          Choose an option
+        </MenuItem>
+        {["Size 1", "Size 2", "Size 3"].map((size) => (
+          <MenuItem key={size} value={size}>
+            {size}
+          </MenuItem>
+        ))}
+      </Select>
+    </Box>
+
+    {/* Add to Cart & Payment Options */}
+    {!showQuantityControls ? (
+      <Button
+        variant="contained"
+        sx={{
+          width: "100%",
+          height: 50,
+          color: "#fff",
+          backgroundColor: "#000",
+        }}
+        onClick={() => {
+          setShowQuantityControls(true);
+          addToCart(product);
+        }}
+      >
+        Add To Cart
+      </Button>
+    ) : (
+      <Typography variant="body2" textAlign="center">
+        Quantity controls would appear here.
+      </Typography>
+    )}
+
+    <Button
+      variant="contained"
+      sx={{
+        width: "100%",
+        height: 50,
+        backgroundColor: "grey",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 1,
+      }}
+    >
+      Pay with
+      <GooglePayLogo style={{ width: 70, height: 70 }} />
+    </Button>
+
+    {/* Payment Icons */}
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        mt: 2,
+      }}
+    >
+      {paymentIcons.map(({ Component, alt }, index) => (
+        <IconButton key={index} aria-label={alt}>
+          <Box component={Component} sx={{ width: 40, height: 40 }} />
+        </IconButton>
+      ))}
+    </Box>
+  </Box>
+);
 
 export default ViewProduct;

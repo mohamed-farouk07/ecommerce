@@ -1,29 +1,34 @@
 import React, { useState } from "react";
 import { FaArrowLeft, FaShoppingCart, FaChevronDown } from "react-icons/fa";
-import { Box, Button, Drawer, IconButton } from "@mui/material";
+import { Box, Button, IconButton, Badge } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import CartDrawer from "./CartDrawer";
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  cartItems: any[];
+  handleIncrement: (productId: number) => void;
+  handleDecrement: (productId: number) => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ cartItems, handleIncrement, handleDecrement }) => {
   const navigate = useNavigate();
   const [isCartOpen, setIsCartOpen] = useState(false);
-  
 
   const buttonTexts = [
-    "NEW IN",
-    "SHOP BY",
-    "WOMEN",
-    "MEN",
-    "DESIGNERS",
-    "CLOTHING",
-    "SHOES",
-    "BAGS",
-    "ACCESSORIES",
-    "JEWELLERY",
+    "NEW IN", "SHOP BY", "WOMEN", "MEN", "DESIGNERS", "CLOTHING",
+    "SHOES", "BAGS", "ACCESSORIES", "JEWELLERY",
   ];
 
   const toggleCartDrawer = () => {
     setIsCartOpen((prevState) => !prevState);
   };
+
+  // Calculate total price and quantity using utility functions
+  const calculateTotalPrice = (cartItems: any[]) => cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const calculateTotalQuantity = (cartItems: any[]) => cartItems.reduce((total, item) => total + item.quantity, 0);
+
+  const totalPrice = calculateTotalPrice(cartItems);
+  const totalQuantity = calculateTotalQuantity(cartItems);
 
   return (
     <nav className="bg-white py-4">
@@ -33,12 +38,7 @@ const Navbar: React.FC = () => {
           <div key={index}>
             <Button
               variant="text"
-              sx={{
-                textTransform: "none",
-                color: "black",
-                display: "flex",
-                alignItems: "center",
-              }}
+              sx={{ textTransform: "none", color: "black", display: "flex", alignItems: "center" }}
             >
               {text}
               <FaChevronDown className="ml-1" />
@@ -50,50 +50,36 @@ const Navbar: React.FC = () => {
       <div className="mt-4" />
 
       {/* "Men" Button Row */}
-      <Box
-        className="flex items-center justify-between p-3 bg-black text-white"
-        sx={{ paddingX: 2 }}
-      >
-        {/* Empty Box to Reserve Space on Left */}
+      <Box className="flex items-center justify-between p-3 bg-black text-white" sx={{ paddingX: 2 }}>
         <Box sx={{ width: 48 }} />
-
-        {/* Centered "Men" Button */}
         <Button
           variant="text"
           color="inherit"
           sx={{ textTransform: "none", alignSelf: "center" }}
-          onClick={() => navigate(-1)} // Navigate back
+          onClick={() => navigate(-1)} // Navigate back to all products
         >
           <FaArrowLeft style={{ marginRight: "5px" }} />
           Men
         </Button>
 
         {/* Cart Icon Button on Right */}
-        <IconButton
-          color="inherit"
-          sx={{ textTransform: "none" }}
-          onClick={toggleCartDrawer}
-        >
-          <FaShoppingCart />
+        <IconButton color="inherit" sx={{ textTransform: "none" }} onClick={toggleCartDrawer}>
+          <Badge badgeContent={totalQuantity} color="primary">
+            <FaShoppingCart />
+          </Badge>
         </IconButton>
       </Box>
 
       {/* Cart Drawer */}
-      <Drawer
-        anchor="right"
+      <CartDrawer
         open={isCartOpen}
         onClose={toggleCartDrawer}
-        sx={{
-          "& .MuiDrawer-paper": {
-            width: 300,
-          },
-        }}
-      >
-        <Box className="p-4">
-          <h2 className="text-lg font-bold">Your Cart</h2>
-          <p>Your cart is empty.</p>
-        </Box>
-      </Drawer>
+        cartItems={cartItems}
+        handleIncrement={handleIncrement}
+        handleDecrement={handleDecrement}
+        totalPrice={totalPrice}
+        totalQuantity={totalQuantity}
+      />
     </nav>
   );
 };
